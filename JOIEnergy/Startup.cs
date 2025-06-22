@@ -59,6 +59,10 @@ namespace JOIEnergy
             services.AddSingleton((IServiceProvider arg) => readings);
             services.AddSingleton((IServiceProvider arg) => pricePlans);
             services.AddSingleton((IServiceProvider arg) => SmartMeterToPricePlanAccounts);
+
+            // Add Swagger services
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,8 +73,20 @@ namespace JOIEnergy
                 app.UseDeveloperExceptionPage();
             }
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "JOIEnergy API V1");
+                c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
+            });
+
             app.UseMvc();
         }
+
 
         private Dictionary<string, List<ElectricityReading>> GenerateMeterElectricityReadings() {
             var readings = new Dictionary<string, List<ElectricityReading>>();
